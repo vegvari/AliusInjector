@@ -1,0 +1,23 @@
+{
+    "name": "alius/injector",
+    "description": "Inject dependencies using reflection",
+    "license": "GPL-2.0",
+    "authors": [
+        {
+            "name": "Romeo Vegvari",
+            "email": "romeo@vegvari.hu"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=5.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Alius\\Injector\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "files": ["test/Fixtures.php"]
+    }
+}
