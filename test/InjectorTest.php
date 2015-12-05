@@ -337,10 +337,13 @@ class InjectorTest extends PHPUnit_Framework_TestCase
 
     public function testOneClosureArgument()
     {
-        $instance1 = OneClosureArgument::make(function () {});
+        // Use the same closure and make hhvm happy
+        $closure = function () {};
+
+        $instance1 = OneClosureArgument::make($closure);
         $this->assertInstanceOf(Closure::class, $instance1->a1);
 
-        $instance2 = $this->injector->get(OneClosureArgument::class, [function () {}]);
+        $instance2 = $this->injector->get(OneClosureArgument::class, [$closure]);
         $this->assertEquals($instance1, $instance2);
     }
 
