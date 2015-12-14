@@ -1,11 +1,9 @@
 <?php
 
-namespace Alius\Test;
+namespace Alius\Injector;
 
 use Closure;
-use Alius\Injector\Injector;
 use PHPUnit_Framework_TestCase;
-use Alius\Injector\InjectorException;
 
 /**
  * @coversDefaultClass \Alius\Injector\Injector

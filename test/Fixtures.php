@@ -1,6 +1,6 @@
 <?php
 
-namespace Alius\Test;
+namespace Alius\Injector;
 
 use Closure;
 
