@@ -4,6 +4,31 @@ namespace Alius\Injector;
 
 use Closure;
 use PHPUnit_Framework_TestCase;
+use Alius\Injector\Fixtures\OneArgument;
+use Alius\Injector\Fixtures\OneSimpleClass;
+use Alius\Injector\Fixtures\SimpleInterface;
+use Alius\Injector\Fixtures\WithConstructor;
+use Alius\Injector\Fixtures\OneArrayArgument;
+use Alius\Injector\Fixtures\MultipleArgument;
+use Alius\Injector\Fixtures\OneClosureArgument;
+use Alius\Injector\Fixtures\OneRecursiveClass;
+use Alius\Injector\Fixtures\WithoutConstructor;
+use Alius\Injector\Fixtures\MultipleSimpleClass;
+use Alius\Injector\Fixtures\SimpleInterfaceUser;
+use Alius\Injector\Fixtures\MultipleRecursiveClass;
+use Alius\Injector\Fixtures\OneOptionalClassArgument;
+use Alius\Injector\Fixtures\OneOptionalClosureArgument;
+use Alius\Injector\Fixtures\SimpleInterfaceImplementation;
+use Alius\Injector\Fixtures\SimpleInterfaceImplementationTwo;
+use Alius\Injector\Fixtures\OneOptionalArgumentWithNullDefault;
+use Alius\Injector\Fixtures\OneOptionalArgumentWithArrayDefault;
+use Alius\Injector\Fixtures\OneOptionalArgumentWithValueDefault;
+use Alius\Injector\Fixtures\OneOptionalArgumentWithConstantDefault;
+use Alius\Injector\Fixtures\OneOptionalArrayArgumentWithNullDefault;
+use Alius\Injector\Fixtures\OneOptionalArrayArgumentWithEmptyArrayDefault;
+use Alius\Injector\Fixtures\OneOptionalArrayArgumentWithNotEmptyArrayDefault;
+use Alius\Injector\Fixtures\MultipleArgumentWithFirstOptionalWithNullDefault;
+
 use Alius\Injector\Exceptions\AlreadyShared;
 use Alius\Injector\Exceptions\ImplementationNotFound;
 use Alius\Injector\Exceptions\SharedInstanceArguments;
@@ -182,16 +207,16 @@ class InjectorTest extends PHPUnit_Framework_TestCase
     public function testInterfaceImplementationUsingSharedFirstWins()
     {
         $this->injector->shared(SimpleInterfaceImplementation::class);
-        $this->injector->shared(SimpleInterfaceImplementation2::class);
+        $this->injector->shared(SimpleInterfaceImplementationTwo::class);
         $this->assertTrue($this->injector->get(SimpleInterfaceUser::class)->argument1 instanceof SimpleInterfaceImplementation);
     }
 
     public function testInterfaceImplementationExplicitWins()
     {
         $this->injector->shared(SimpleInterfaceImplementation::class);
-        $this->injector->setImplementation(SimpleInterface::class, SimpleInterfaceImplementation2::class);
-        $this->assertSame($this->injector->getImplementation(SimpleInterface::class), SimpleInterfaceImplementation2::class);
-        $this->assertTrue($this->injector->get(SimpleInterfaceUser::class)->argument1 instanceof SimpleInterfaceImplementation2);
+        $this->injector->setImplementation(SimpleInterface::class, SimpleInterfaceImplementationTwo::class);
+        $this->assertSame($this->injector->getImplementation(SimpleInterface::class), SimpleInterfaceImplementationTwo::class);
+        $this->assertTrue($this->injector->get(SimpleInterfaceUser::class)->argument1 instanceof SimpleInterfaceImplementationTwo);
     }
 
     public function testInterfaceImplementationExplicitFail()

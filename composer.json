@@ -18,6 +18,8 @@
         }
     },
     "autoload-dev": {
-        "files": ["test/Fixtures.php"]
+        "psr-4": {
+            "Alius\\Injector\\": "test/"
+        }
     }
 }
