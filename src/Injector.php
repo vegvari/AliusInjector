@@ -196,8 +196,8 @@ class Injector
 
         if ($closure) {
             return call_user_func_array([$class_name, '__invoke'], $calling_arguments);
-        } else {
-            return $reflection->newInstanceArgs($calling_arguments);
         }
+
+        return $reflection->newInstanceArgs($calling_arguments);
     }
 }
