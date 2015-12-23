@@ -4,6 +4,10 @@ namespace Alius\Injector;
 
 use Closure;
 use PHPUnit_Framework_TestCase;
+use Alius\Injector\Exceptions\AlreadyShared;
+use Alius\Injector\Exceptions\ImplementationNotFound;
+use Alius\Injector\Exceptions\SharedInstanceArguments;
+use Alius\Injector\Exceptions\ImplementationAlreadySet;
 
 class InjectorTest extends PHPUnit_Framework_TestCase
 {
@@ -112,7 +116,7 @@ class InjectorTest extends PHPUnit_Framework_TestCase
 
     public function testSharedInstanceTryToShareAgain()
     {
-        $this->setExpectedException(InjectorException::class);
+        $this->setExpectedException(AlreadyShared::class);
         $this->injector->shared(WithoutConstructor::class);
         $this->injector->shared(WithoutConstructor::class);
     }
@@ -143,7 +147,7 @@ class InjectorTest extends PHPUnit_Framework_TestCase
 
     public function testSharedWithArgumentsFail()
     {
-        $this->setExpectedException(InjectorException::class);
+        $this->setExpectedException(SharedInstanceArguments::class);
         $this->injector->shared(OneArgument::class, ['test1']);
         $this->injector->get(OneArgument::class, ['test2']);
     }
@@ -192,14 +196,14 @@ class InjectorTest extends PHPUnit_Framework_TestCase
 
     public function testInterfaceImplementationExplicitFail()
     {
-        $this->setExpectedException(InjectorException::class);
+        $this->setExpectedException(ImplementationAlreadySet::class);
         $this->injector->setImplementation(SimpleInterface::class, SimpleInterfaceImplementation::class);
         $this->injector->setImplementation(SimpleInterface::class, SimpleInterfaceImplementation::class);
     }
 
     public function testInterfaceImplementationFail()
     {
-        $this->setExpectedException(InjectorException::class);
+        $this->setExpectedException(ImplementationNotFound::class);
         $this->injector->get(SimpleInterfaceUser::class);
     }
 

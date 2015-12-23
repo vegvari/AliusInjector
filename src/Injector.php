@@ -5,6 +5,10 @@ namespace Alius\Injector;
 use Closure;
 use ReflectionClass;
 use ReflectionFunction;
+use Alius\Injector\Exceptions\AlreadyShared;
+use Alius\Injector\Exceptions\ImplementationNotFound;
+use Alius\Injector\Exceptions\SharedInstanceArguments;
+use Alius\Injector\Exceptions\ImplementationAlreadySet;
 
 class Injector
 {
@@ -47,7 +51,7 @@ class Injector
     public function shared($class_name, array $class_args = [])
     {
         if ($this->isShared($class_name)) {
-            throw InjectorException::alreadyShared($class_name);
+            throw new AlreadyShared($class_name);
         }
 
         $this->shared[$class_name]['instance'] = null;
@@ -80,7 +84,7 @@ class Injector
     public function setImplementation($interface_name, $class_name)
     {
         if (isset($this->interfaces[$interface_name])) {
-            throw InjectorException::implementationAlreadySet($interface_name, $this->interfaces[$interface_name]);
+            throw new ImplementationAlreadySet($interface_name, $this->interfaces[$interface_name]);
         }
 
         $this->interfaces[$interface_name] = $class_name;
@@ -100,7 +104,7 @@ class Injector
             return $this->shared_interfaces[$interface_name];
         }
 
-        throw InjectorException::noImplementation($interface_name);
+        throw new ImplementationNotFound($interface_name);
     }
 
     /**
@@ -114,7 +118,7 @@ class Injector
     {
         if ($this->isShared($class_name)) {
             if (! empty($class_args)) {
-                throw InjectorException::argumentsForShared($class_name);
+                throw new SharedInstanceArguments($class_name);
             }
 
             if ($this->shared[$class_name]['instance'] === null) {
