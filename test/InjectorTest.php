@@ -52,7 +52,7 @@ class InjectorTest extends PHPUnit_Framework_TestCase
     public function testOneSimpleClass()
     {
         $instance1 = OneSimpleClass::make();
-        $this->assertInstanceOf(WithoutConstructor::class, $instance1->a1);
+        $this->assertInstanceOf(WithoutConstructor::class, $instance1->argument1);
 
         $instance2 = $this->injector->get(OneSimpleClass::class);
         $instance3 = $this->injector->get(OneSimpleClass::class);
@@ -65,7 +65,7 @@ class InjectorTest extends PHPUnit_Framework_TestCase
     public function testMultipleSimpleClass()
     {
         $instance1 = MultipleSimpleClass::make();
-        $this->assertInstanceOf(WithoutConstructor::class, $instance1->a1);
+        $this->assertInstanceOf(WithoutConstructor::class, $instance1->argument1);
 
         $instance2 = $this->injector->get(MultipleSimpleClass::class);
         $instance3 = $this->injector->get(MultipleSimpleClass::class);
@@ -78,7 +78,7 @@ class InjectorTest extends PHPUnit_Framework_TestCase
     public function testOneRecursiveClass()
     {
         $instance1 = OneRecursiveClass::make();
-        $this->assertInstanceOf(OneSimpleClass::class, $instance1->a1);
+        $this->assertInstanceOf(OneSimpleClass::class, $instance1->argument1);
 
         $instance2 = $this->injector->get(OneRecursiveClass::class);
         $instance3 = $this->injector->get(OneRecursiveClass::class);
@@ -91,8 +91,8 @@ class InjectorTest extends PHPUnit_Framework_TestCase
     public function testMultipleRecursiveClass()
     {
         $instance1 = MultipleRecursiveClass::make();
-        $this->assertInstanceOf(OneSimpleClass::class, $instance1->a1);
-        $this->assertInstanceOf(OneRecursiveClass::class, $instance1->a2);
+        $this->assertInstanceOf(OneSimpleClass::class, $instance1->argument1);
+        $this->assertInstanceOf(OneRecursiveClass::class, $instance1->argument2);
 
         $instance2 = $this->injector->get(MultipleRecursiveClass::class);
         $instance3 = $this->injector->get(MultipleRecursiveClass::class);
@@ -121,7 +121,7 @@ class InjectorTest extends PHPUnit_Framework_TestCase
     {
         $this->injector->shared(WithoutConstructor::class);
         $instance1 = $this->injector->get(OneSimpleClass::class);
-        $this->assertSame($this->injector->get(WithoutConstructor::class), $instance1->a1);
+        $this->assertSame($this->injector->get(WithoutConstructor::class), $instance1->argument1);
     }
 
     public function testSharedUsingSharedInstance()
@@ -129,16 +129,16 @@ class InjectorTest extends PHPUnit_Framework_TestCase
         $this->injector->shared(WithoutConstructor::class);
         $this->injector->shared(OneSimpleClass::class);
         $instance1 = $this->injector->get(MultipleRecursiveClass::class);
-        $this->assertSame($this->injector->get(OneSimpleClass::class), $instance1->a1);
-        $this->assertSame($this->injector->get(WithoutConstructor::class), $instance1->a1->a1);
-        $this->assertNotSame($this->injector->get(OneRecursiveClass::class), $instance1->a2);
+        $this->assertSame($this->injector->get(OneSimpleClass::class), $instance1->argument1);
+        $this->assertSame($this->injector->get(WithoutConstructor::class), $instance1->argument1->argument1);
+        $this->assertNotSame($this->injector->get(OneRecursiveClass::class), $instance1->argument2);
     }
 
     public function testSharedWithArguments()
     {
         $this->injector->shared(OneArgument::class, ['test1']);
         $this->assertSame($this->injector->get(OneArgument::class), $this->injector->get(OneArgument::class));
-        $this->assertSame($this->injector->get(OneArgument::class)->a1, 'test1');
+        $this->assertSame($this->injector->get(OneArgument::class)->argument1, 'test1');
     }
 
     public function testSharedWithArgumentsFail()
@@ -157,15 +157,15 @@ class InjectorTest extends PHPUnit_Framework_TestCase
         $this->injector->shared(OneArgument::class, ['test1']);
         $instance = $this->injector->make(OneArgument::class, ['test2']);
 
-        $this->assertSame($this->injector->get(OneArgument::class)->a1, 'test1');
-        $this->assertSame($instance->a1, 'test2');
+        $this->assertSame($this->injector->get(OneArgument::class)->argument1, 'test1');
+        $this->assertSame($instance->argument1, 'test2');
     }
 
     public function testReplacingSharedInstance()
     {
         $this->injector->shared(WithoutConstructor::class);
         $instance = $this->injector->get(OneSimpleClass::class, [WithoutConstructor::make()]);
-        $this->assertNotSame($instance->a1, $this->injector->get(WithoutConstructor::class));
+        $this->assertNotSame($instance->argument1, $this->injector->get(WithoutConstructor::class));
     }
 
     public function testInterfaceImplementationUsingShared()
@@ -179,7 +179,7 @@ class InjectorTest extends PHPUnit_Framework_TestCase
     {
         $this->injector->shared(SimpleInterfaceImplementation::class);
         $this->injector->shared(SimpleInterfaceImplementation2::class);
-        $this->assertTrue($this->injector->get(SimpleInterfaceUser::class)->a1 instanceof SimpleInterfaceImplementation);
+        $this->assertTrue($this->injector->get(SimpleInterfaceUser::class)->argument1 instanceof SimpleInterfaceImplementation);
     }
 
     public function testInterfaceImplementationExplicitWins()
@@ -187,7 +187,7 @@ class InjectorTest extends PHPUnit_Framework_TestCase
         $this->injector->shared(SimpleInterfaceImplementation::class);
         $this->injector->setImplementation(SimpleInterface::class, SimpleInterfaceImplementation2::class);
         $this->assertSame($this->injector->getImplementation(SimpleInterface::class), SimpleInterfaceImplementation2::class);
-        $this->assertTrue($this->injector->get(SimpleInterfaceUser::class)->a1 instanceof SimpleInterfaceImplementation2);
+        $this->assertTrue($this->injector->get(SimpleInterfaceUser::class)->argument1 instanceof SimpleInterfaceImplementation2);
     }
 
     public function testInterfaceImplementationExplicitFail()
@@ -206,10 +206,10 @@ class InjectorTest extends PHPUnit_Framework_TestCase
     public function testOneArgument()
     {
         $instance1 = OneArgument::make('test1');
-        $this->assertSame($instance1->a1, 'test1');
+        $this->assertSame($instance1->argument1, 'test1');
 
         // named
-        $instance2 = $this->injector->get(OneArgument::class, ['a1' => 'test1']);
+        $instance2 = $this->injector->get(OneArgument::class, ['argument1' => 'test1']);
         $this->assertEquals($instance1, $instance2);
 
         // indexed
@@ -224,7 +224,7 @@ class InjectorTest extends PHPUnit_Framework_TestCase
 
         // testing with null
         $instance1 = OneArgument::make(null);
-        $this->assertSame($instance1->a1, null);
+        $this->assertSame($instance1->argument1, null);
 
         $instance2 = $this->injector->get(OneArgument::class, [null]);
         $this->assertEquals($instance1, $instance2);
@@ -233,7 +233,7 @@ class InjectorTest extends PHPUnit_Framework_TestCase
     public function testOneOptionalArgumentWithNullDefault()
     {
         $instance1 = OneOptionalArgumentWithNullDefault::make();
-        $this->assertSame($instance1->a1, null);
+        $this->assertSame($instance1->argument1, null);
 
         $instance2 = $this->injector->get(OneOptionalArgumentWithNullDefault::class);
         $this->assertEquals($instance1, $instance2);
@@ -245,7 +245,7 @@ class InjectorTest extends PHPUnit_Framework_TestCase
     public function testOneOptionalArgumentWithArrayDefault()
     {
         $instance1 = OneOptionalArgumentWithArrayDefault::make();
-        $this->assertSame($instance1->a1, []);
+        $this->assertSame($instance1->argument1, []);
 
         $instance2 = $this->injector->get(OneOptionalArgumentWithArrayDefault::class);
         $this->assertEquals($instance1, $instance2);
@@ -257,7 +257,7 @@ class InjectorTest extends PHPUnit_Framework_TestCase
     public function testOneOptionalArgumentWithValueDefault()
     {
         $instance1 = OneOptionalArgumentWithValueDefault::make();
-        $this->assertSame($instance1->a1, 'test');
+        $this->assertSame($instance1->argument1, 'test');
 
         $instance2 = $this->injector->get(OneOptionalArgumentWithValueDefault::class);
         $this->assertEquals($instance1, $instance2);
@@ -269,7 +269,7 @@ class InjectorTest extends PHPUnit_Framework_TestCase
     public function testOneOptionalArgumentWithConstantDefault()
     {
         $instance1 = OneOptionalArgumentWithConstantDefault::make();
-        $this->assertSame($instance1->a1, PHP_INT_MAX);
+        $this->assertSame($instance1->argument1, PHP_INT_MAX);
 
         $instance2 = $this->injector->get(OneOptionalArgumentWithConstantDefault::class);
         $this->assertEquals($instance1, $instance2);
@@ -281,7 +281,7 @@ class InjectorTest extends PHPUnit_Framework_TestCase
     public function testOneArrayArgument()
     {
         $instance1 = OneArrayArgument::make(['test1']);
-        $this->assertSame($instance1->a1, ['test1']);
+        $this->assertSame($instance1->argument1, ['test1']);
 
         $instance2 = $this->injector->get(OneArrayArgument::class, [['test1']]);
         $this->assertEquals($instance1, $instance2);
@@ -290,7 +290,7 @@ class InjectorTest extends PHPUnit_Framework_TestCase
     public function testOneOptionalArrayArgumentWithNullDefault()
     {
         $instance1 = OneOptionalArrayArgumentWithNullDefault::make();
-        $this->assertSame($instance1->a1, null);
+        $this->assertSame($instance1->argument1, null);
 
         $instance2 = $this->injector->get(OneOptionalArrayArgumentWithNullDefault::class);
         $this->assertEquals($instance1, $instance2);
@@ -302,7 +302,7 @@ class InjectorTest extends PHPUnit_Framework_TestCase
     public function testOneOptionalArrayArgumentWithEmptyArrayDefault()
     {
         $instance1 = OneOptionalArrayArgumentWithEmptyArrayDefault::make();
-        $this->assertSame($instance1->a1, []);
+        $this->assertSame($instance1->argument1, []);
 
         $instance2 = $this->injector->get(OneOptionalArrayArgumentWithEmptyArrayDefault::class);
         $this->assertEquals($instance1, $instance2);
@@ -314,7 +314,7 @@ class InjectorTest extends PHPUnit_Framework_TestCase
     public function testOneOptionalArrayArgumentWithNotEmptyArrayDefault()
     {
         $instance1 = OneOptionalArrayArgumentWithNotEmptyArrayDefault::make();
-        $this->assertSame($instance1->a1, ['test']);
+        $this->assertSame($instance1->argument1, ['test']);
 
         $instance2 = $this->injector->get(OneOptionalArrayArgumentWithNotEmptyArrayDefault::class);
         $this->assertEquals($instance1, $instance2);
@@ -326,7 +326,7 @@ class InjectorTest extends PHPUnit_Framework_TestCase
     public function testOneOptionalClassArgument()
     {
         $instance1 = OneOptionalClassArgument::make();
-        $this->assertSame($instance1->a1, null);
+        $this->assertSame($instance1->argument1, null);
 
         $instance2 = $this->injector->get(OneOptionalClassArgument::class);
         $this->assertEquals($instance1, $instance2);
@@ -339,7 +339,7 @@ class InjectorTest extends PHPUnit_Framework_TestCase
         };
 
         $instance1 = OneClosureArgument::make($closure);
-        $this->assertInstanceOf(Closure::class, $instance1->a1);
+        $this->assertInstanceOf(Closure::class, $instance1->argument1);
 
         $instance2 = $this->injector->get(OneClosureArgument::class, [$closure]);
         $this->assertEquals($instance1, $instance2);
@@ -348,7 +348,7 @@ class InjectorTest extends PHPUnit_Framework_TestCase
     public function testOneOptionalClosureArgument()
     {
         $instance1 = OneOptionalClosureArgument::make();
-        $this->assertSame($instance1->a1, null);
+        $this->assertSame($instance1->argument1, null);
 
         $instance2 = $this->injector->get(OneOptionalClosureArgument::class);
         $this->assertEquals($instance1, $instance2);
@@ -361,14 +361,14 @@ class InjectorTest extends PHPUnit_Framework_TestCase
         // named
         $instance2 = $this->injector->get(
             MultipleArgument::class,
-            ['a1' => 'test1', 'a2' => 'test2']
+            ['argument1' => 'test1', 'argument2' => 'test2']
         );
         $this->assertEquals($instance1, $instance2);
 
         // named with different order
         $instance2 = $this->injector->get(
             MultipleArgument::class,
-            ['a2' => 'test2', 'a1' => 'test1']
+            ['argument2' => 'test2', 'argument1' => 'test1']
         );
         $this->assertEquals($instance1, $instance2);
 
@@ -394,14 +394,14 @@ class InjectorTest extends PHPUnit_Framework_TestCase
         // named
         $instance2 = $this->injector->get(
             MultipleArgumentWithFirstOptionalWithNullDefault::class,
-            ['a1' => null, 'a2' => 'test2']
+            ['argument1' => null, 'argument2' => 'test2']
         );
         $this->assertEquals($instance1, $instance2);
 
         // named without the optional
         $instance2 = $this->injector->get(
             MultipleArgumentWithFirstOptionalWithNullDefault::class,
-            ['a2' => 'test2']
+            ['argument2' => 'test2']
         );
         $this->assertEquals($instance1, $instance2);
 
