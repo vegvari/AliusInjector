@@ -5,6 +5,7 @@ namespace Alius\Injector;
 use Closure;
 use ReflectionClass;
 use ReflectionFunction;
+use ReflectionParameter;
 use Alius\Injector\Exceptions\AlreadyShared;
 use Alius\Injector\Exceptions\ImplementationNotFound;
 use Alius\Injector\Exceptions\SharedInstanceArguments;
@@ -67,7 +68,8 @@ class Injector
     /**
      * Is this class shared?
      *
-     * @param  string $class_name
+     * @param string $class_name
+     *
      * @return bool
      */
     public function isShared($class_name)
@@ -93,7 +95,8 @@ class Injector
     /**
      * Get the class name of the registered implementation
      *
-     * @param  string $interface_name
+     * @param string $interface_name
+     *
      * @return string
      */
     public function getImplementation($interface_name)
@@ -110,8 +113,9 @@ class Injector
     /**
      * Get a shared or new instance
      *
-     * @param  string $class_name The name of the class
-     * @param  array  $class_args
+     * @param string $class_name The name of the class
+     * @param array  $class_args
+     *
      * @return object
      */
     public function get($class_name, array $class_args = [])
@@ -134,8 +138,9 @@ class Injector
     /**
      * Create a new instance or invoke a Closure
      *
-     * @param  string|Closure $class_name
-     * @param  array          $custom_args
+     * @param string|Closure $class_name
+     * @param array          $custom_args
+     *
      * @return object
      */
     public function make($class_name, array $custom_args = [])
@@ -176,18 +181,9 @@ class Injector
         $arguments = [];
 
         foreach ($params as $param_key => $param) {
-            // Set the argument null or the default value
-            $arguments[$param_key] = null;
-            if ($param->isDefaultValueAvailable()) {
-                $arguments[$param_key] = $param->getDefaultValue();
-            }
-
-            // Get the argument's name and typehint
+            $arguments[$param_key] = $this->getDefaultValue($param);
             $name = $param->getName();
-            $hint = $param->getClass();
-            if ($hint !== null) {
-                $hint = $param->getClass()->name;
-            }
+            $hint = $this->getTypeHint($param);
 
             // Get the custom argument based on the argument's name or position
             if (array_key_exists($name, $custom_args)) {
@@ -205,5 +201,33 @@ class Injector
         }
 
         return $arguments;
+    }
+
+    /**
+     * Get the default value of the parameter
+     *
+     * @param ReflectionParameter $param
+     *
+     * @return mixed
+     */
+    protected function getDefaultValue(ReflectionParameter $param)
+    {
+        if ($param->isDefaultValueAvailable()) {
+            return $param->getDefaultValue();
+        }
+    }
+
+    /**
+     * Get the type hint of the parameter
+     *
+     * @param ReflectionParameter $param
+     *
+     * @return string|null
+     */
+    protected function getTypeHint(ReflectionParameter $param)
+    {
+        if ($param->getClass() !== null) {
+            return $param->getClass()->name;
+        }
     }
 }
