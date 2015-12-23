@@ -26,9 +26,9 @@ class WithConstructor
 
 class OneSimpleClass
 {
-    public function __construct(WithoutConstructor $a1)
+    public function __construct(WithoutConstructor $argument1)
     {
-        $this->a1 = $a1;
+        $this->argument1 = $argument1;
     }
 
     public static function make()
@@ -39,10 +39,10 @@ class OneSimpleClass
 
 class MultipleSimpleClass
 {
-    public function __construct(WithoutConstructor $a1, WithConstructor $a2)
+    public function __construct(WithoutConstructor $argument1, WithConstructor $argument2)
     {
-        $this->a1 = $a1;
-        $this->a2 = $a2;
+        $this->argument1 = $argument1;
+        $this->argument2 = $argument2;
     }
 
     public static function make()
@@ -56,9 +56,9 @@ class MultipleSimpleClass
 
 class OneRecursiveClass
 {
-    public function __construct(OneSimpleClass $a1)
+    public function __construct(OneSimpleClass $argument1)
     {
-        $this->a1 = $a1;
+        $this->argument1 = $argument1;
     }
 
     public static function make()
@@ -69,10 +69,10 @@ class OneRecursiveClass
 
 class MultipleRecursiveClass
 {
-    public function __construct(OneSimpleClass $a1, OneRecursiveClass $a2)
+    public function __construct(OneSimpleClass $argument1, OneRecursiveClass $argument2)
     {
-        $this->a1 = $a1;
-        $this->a2 = $a2;
+        $this->argument1 = $argument1;
+        $this->argument2 = $argument2;
     }
 
     public static function make()
@@ -106,9 +106,9 @@ interface SimpleInterface
 
 class SimpleInterfaceUser
 {
-    public function __construct(SimpleInterface $a1)
+    public function __construct(SimpleInterface $argument1)
     {
-        $this->a1 = $a1;
+        $this->argument1 = $argument1;
     }
 
     public static function make()
@@ -119,184 +119,184 @@ class SimpleInterfaceUser
 
 class OneArgument
 {
-    public function __construct($a1)
+    public function __construct($argument1)
     {
-        $this->a1 = $a1;
+        $this->argument1 = $argument1;
     }
 
-    public static function make($a1)
+    public static function make($argument1)
     {
-        return new static($a1);
+        return new static($argument1);
     }
 }
 
 class OneOptionalArgumentWithNullDefault
 {
-    public function __construct($a1 = null)
+    public function __construct($argument1 = null)
     {
-        $this->a1 = $a1;
+        $this->argument1 = $argument1;
     }
 
-    public static function make($a1 = null)
+    public static function make($argument1 = null)
     {
-        return new static($a1);
+        return new static($argument1);
     }
 }
 
 class OneOptionalArgumentWithArrayDefault
 {
-    public function __construct($a1 = [])
+    public function __construct($argument1 = [])
     {
-        $this->a1 = $a1;
+        $this->argument1 = $argument1;
     }
 
-    public static function make($a1 = [])
+    public static function make($argument1 = [])
     {
-        return new static($a1);
+        return new static($argument1);
     }
 }
 
 class OneOptionalArgumentWithValueDefault
 {
-    public function __construct($a1 = 'test')
+    public function __construct($argument1 = 'test')
     {
-        $this->a1 = $a1;
+        $this->argument1 = $argument1;
     }
 
-    public static function make($a1 = 'test')
+    public static function make($argument1 = 'test')
     {
-        return new static($a1);
+        return new static($argument1);
     }
 }
 
 class OneOptionalArgumentWithConstantDefault
 {
-    public function __construct($a1 = PHP_INT_MAX)
+    public function __construct($argument1 = PHP_INT_MAX)
     {
-        $this->a1 = $a1;
+        $this->argument1 = $argument1;
     }
 
-    public static function make($a1 = PHP_INT_MAX)
+    public static function make($argument1 = PHP_INT_MAX)
     {
-        return new static($a1);
+        return new static($argument1);
     }
 }
 
 class OneArrayArgument
 {
-    public function __construct(array $a1)
+    public function __construct(array $argument1)
     {
-        $this->a1 = $a1;
+        $this->argument1 = $argument1;
     }
 
-    public static function make(array $a1)
+    public static function make(array $argument1)
     {
-        return new static($a1);
+        return new static($argument1);
     }
 }
 
 class OneOptionalArrayArgumentWithNullDefault
 {
-    public function __construct(array $a1 = null)
+    public function __construct(array $argument1 = null)
     {
-        $this->a1 = $a1;
+        $this->argument1 = $argument1;
     }
 
-    public static function make(array $a1 = null)
+    public static function make(array $argument1 = null)
     {
-        return new static($a1);
+        return new static($argument1);
     }
 }
 
 class OneOptionalArrayArgumentWithEmptyArrayDefault
 {
-    public function __construct(array $a1 = [])
+    public function __construct(array $argument1 = [])
     {
-        $this->a1 = $a1;
+        $this->argument1 = $argument1;
     }
 
-    public static function make(array $a1 = [])
+    public static function make(array $argument1 = [])
     {
-        return new static($a1);
+        return new static($argument1);
     }
 }
 
 class OneOptionalArrayArgumentWithNotEmptyArrayDefault
 {
-    public function __construct(array $a1 = ['test'])
+    public function __construct(array $argument1 = ['test'])
     {
-        $this->a1 = $a1;
+        $this->argument1 = $argument1;
     }
 
-    public static function make(array $a1 = ['test'])
+    public static function make(array $argument1 = ['test'])
     {
-        return new static($a1);
+        return new static($argument1);
     }
 }
 
 class OneOptionalClassArgument
 {
-    public function __construct(WithoutConstructor $a1 = null)
+    public function __construct(WithoutConstructor $argument1 = null)
     {
-        $this->a1 = $a1;
+        $this->argument1 = $argument1;
     }
 
-    public static function make(WithoutConstructor $a1 = null)
+    public static function make(WithoutConstructor $argument1 = null)
     {
-        return new static($a1);
+        return new static($argument1);
     }
 }
 
 class OneClosureArgument
 {
-    public function __construct(Closure $a1)
+    public function __construct(Closure $argument1)
     {
-        $this->a1 = $a1;
+        $this->argument1 = $argument1;
     }
 
-    public static function make(Closure $a1)
+    public static function make(Closure $argument1)
     {
-        return new static($a1);
+        return new static($argument1);
     }
 }
 
 class OneOptionalClosureArgument
 {
-    public function __construct(Closure $a1 = null)
+    public function __construct(Closure $argument1 = null)
     {
-        $this->a1 = $a1;
+        $this->argument1 = $argument1;
     }
 
-    public static function make(Closure $a1 = null)
+    public static function make(Closure $argument1 = null)
     {
-        return new static($a1);
+        return new static($argument1);
     }
 }
 
 class MultipleArgument
 {
-    public function __construct($a1, $a2)
+    public function __construct($argument1, $argument2)
     {
-        $this->a1 = $a1;
-        $this->a2 = $a2;
+        $this->argument1 = $argument1;
+        $this->argument2 = $argument2;
     }
 
-    public static function make($a1, $a2)
+    public static function make($argument1, $argument2)
     {
-        return new static($a1, $a2);
+        return new static($argument1, $argument2);
     }
 }
 
 class MultipleArgumentWithFirstOptionalWithNullDefault
 {
-    public function __construct($a1 = null, $a2)
+    public function __construct($argument1 = null, $argument2)
     {
-        $this->a1 = $a1;
-        $this->a2 = $a2;
+        $this->argument1 = $argument1;
+        $this->argument2 = $argument2;
     }
 
-    public static function make($a1 = null, $a2)
+    public static function make($argument1 = null, $argument2)
     {
-        return new static($a1, $a2);
+        return new static($argument1, $argument2);
     }
 }

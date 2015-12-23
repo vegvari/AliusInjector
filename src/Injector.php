@@ -25,6 +25,7 @@ class Injector
 
     /**
      * @param array $shared
+     * @param array $implementations
      */
     public function __construct(array $shared = [], array $implementations = [])
     {
@@ -52,7 +53,7 @@ class Injector
         $this->shared[$class_name]['instance'] = null;
         $this->shared[$class_name]['args'] = $class_args;
 
-        foreach (class_implements($class_name) as $key => $value) {
+        foreach (class_implements($class_name) as $value) {
             if (! isset($this->shared_interfaces[$value])) {
                 $this->shared_interfaces[$value] = $class_name;
             }
