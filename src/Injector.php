@@ -140,24 +140,27 @@ class Injector
      */
     public function make($class_name, array $custom_args = [])
     {
+        // Closure
         if ($class_name instanceof Closure) {
             $reflection = new ReflectionFunction($class_name);
             $params = $reflection->getParameters();
             return call_user_func_array([$class_name, '__invoke'], $this->createArguments($params, $custom_args));
         }
 
+        // Interface
         $reflection = new ReflectionClass($class_name);
         if ($reflection->isInterface()) {
             return $this->get($this->getImplementation($class_name), $custom_args);
         }
 
+        // Class
         $constructor = $reflection->getConstructor();
         if ($constructor !== null) {
             $params = $constructor->getParameters();
             return $reflection->newInstanceArgs($this->createArguments($params, $custom_args));
         }
 
-        return $reflection->newInstanceArgs($this->createArguments([], $custom_args));
+        return $reflection->newInstanceArgs([]);
     }
 
     /**
@@ -168,12 +171,12 @@ class Injector
      *
      * @return array
      */
-    public function createArguments(array $params, array $custom_args = [])
+    protected function createArguments(array $params, array $custom_args = [])
     {
         $arguments = [];
 
         foreach ($params as $param_key => $param) {
-            // Set the argument to the null or the default value
+            // Set the argument null or the default value
             $arguments[$param_key] = null;
             if ($param->isDefaultValueAvailable()) {
                 $arguments[$param_key] = $param->getDefaultValue();
@@ -182,29 +185,22 @@ class Injector
             // Get the argument's name and typehint
             $name = $param->getName();
             $hint = $param->getClass();
-
-            // We have typehint
             if ($hint !== null) {
                 $hint = $param->getClass()->name;
             }
 
             // Get the custom argument based on the argument's name or position
-            $custom_arg_defined = false;
             if (array_key_exists($name, $custom_args)) {
                 $arguments[$param_key] = $custom_args[$name];
-                $custom_arg_defined = true;
             } elseif (array_key_exists($param_key, $custom_args)) {
                 $arguments[$param_key] = $custom_args[$param_key];
-                $custom_arg_defined = true;
             }
 
-            // If the type hint is not Closure, we invoke the passed Closure
-            if ($custom_arg_defined && $hint !== Closure::class && $arguments[$param_key] instanceof Closure) {
+            // Invoke the closure or get the hinted instance
+            if ($hint !== Closure::class && $arguments[$param_key] instanceof Closure) {
                 $arguments[$param_key] = $this->make($arguments[$param_key]);
-            } elseif (! $custom_arg_defined && $hint !== null) {
-                if ($hint !== Closure::class && ! $param->isOptional()) {
-                    $arguments[$param_key] = $this->get($hint);
-                }
+            } elseif (empty($custom_args) && $hint !== null && ! $param->isOptional()) {
+                $arguments[$param_key] = $this->get($hint);
             }
         }
 
