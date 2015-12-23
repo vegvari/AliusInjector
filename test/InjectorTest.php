@@ -5,9 +5,6 @@ namespace Alius\Injector;
 use Closure;
 use PHPUnit_Framework_TestCase;
 
-/**
- * @coversDefaultClass \Alius\Injector\Injector
- */
 class InjectorTest extends PHPUnit_Framework_TestCase
 {
     protected $injector;
